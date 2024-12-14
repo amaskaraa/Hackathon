@@ -129,37 +129,3 @@ def generate_user_stories_and_criteria_specific(text):
     return "".join(user_stories)
 
 
-# def validate_test_case(user_stories_and_criteria):
-#     """
-#
-#     Args:
-#         user_stories_and_criteria: Takes user stories and acceptance criteria into consideration
-#
-#     Returns:
-#         Test cases with the status and explanation
-#     """
-#     messages = [
-#         {"role": "system", "content": "You are a software testing assistant."},
-#         {"role": "user", "content": f"""
-#     The following contains user stories and their corresponding acceptance criteria:
-#     {user_stories_and_criteria}
-#
-#     For each user story, determine an appropriate test case and validate whether it meets the acceptance criteria.
-#     Respond with a structured list of test cases, their results ('Passed' or 'Failed'), and a brief explanation for each including comments, logs, and any recommendations.
-#     Give it for each user story.Do not miss out on any user story.
-#     """}
-#     ]
-#     response = openai.ChatCompletion.create(
-#         model="gpt-4o",
-#         messages=messages,
-#         max_tokens=3000,
-#         temperature=0
-#     )
-#     return response.choices[0].message['content'].strip()
-
-# def setup_environment(setup_instructions):
-#     with open("setup_script.sh", "w") as f:
-#         f.write(setup_instructions)
-#     os.system("chmod +x setup_script.sh")
-#     os.system("./setup_script.sh")
-
