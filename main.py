@@ -1,7 +1,6 @@
 import streamlit as st
 
-from src.services.process import extract_text, generate_user_stories_and_criteria, \
-    generate_user_stories_and_criteria_specific
+from src.services.process import extract_text,generate_user_stories_and_criteria_specific
 
 
 def main():
@@ -21,7 +20,7 @@ def main():
 
             st.subheader("Text Evaluation")
             with st.spinner("Executing test cases..."):
-                user_stories_and_criteria = generate_user_stories_and_criteria(text)
+                # user_stories_and_criteria = generate_user_stories_and_criteria(text)
                 user_stories_and_criteria_specific= generate_user_stories_and_criteria_specific(text)
                 st.write(user_stories_and_criteria_specific)
 # ------------------------------------------------------------------------------------------------#
