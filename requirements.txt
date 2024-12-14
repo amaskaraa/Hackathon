@@ -1,0 +1,9 @@
+boto3
+streamlit
+time
+openai
+python-docx
+PyPDF2
+os
+
+
