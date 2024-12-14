@@ -102,20 +102,6 @@ def generate_user_stories_and_criteria_specific(text):
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": f'''Based on the following requirements:
              {chunk}
-             Stakeholders has the role for each document.Generate all the user story and acceptance criteria from the document.
-            For Example:
-            1. Recruitment & Onboarding
-            User Story 1: Job Postings
-            As a [role],
-                I want to [goal/action],
-                So that [reason/outcome].
-            
-            Acceptance Criteria:
-            Role: [role]
-                - [action or feature]
-                    - arguments: [parameters, if applicable]
-                - [another action or feature]
-            
             Ensure all user stories are structured similarly and grouped by functional area (if applicable).'''}
         ]
         response = openai.ChatCompletion.create(
