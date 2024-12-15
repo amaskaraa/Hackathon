@@ -1,17 +1,18 @@
 import streamlit as st
 
-from src.services.process import extract_text,generate_user_stories_and_criteria_specific
+from src.services.extract_page import extract_dom_attributes
+from src.services.process import compare_dom_tech_doc, extract_text,generate_user_stories_and_criteria_specific, generate_selenium_script, parse_document
+import json
+from docx import Document
 
 
 def main():
     st.title("BRD Automation System")
 
     st.sidebar.header("Inputs")
-    brd_file = st.sidebar.file_uploader("Upload BRD Document", type=["pdf", "docx", "txt"])
-    # app_link = st.sidebar.text_input("Application Link")
-    # setup_file = st.sidebar.file_uploader("Upload Setup Guidelines", type=["txt"])
+    brd_file = st.sidebar.file_uploader("Upload BRD Document", type=["pdf"])
 
-    if st.sidebar.button("Generate Test Cases"):
+    if st.sidebar.button("Generate Results"):
         if brd_file is None:
             st.sidebar.error("Please upload a BRD document before generating test cases.")
         else:
@@ -22,53 +23,46 @@ def main():
             with st.spinner("Executing test cases..."):
                 # user_stories_and_criteria = generate_user_stories_and_criteria(text)
                 user_stories_and_criteria_specific= generate_user_stories_and_criteria_specific(text)
-                st.write(user_stories_and_criteria_specific)
-# ------------------------------------------------------------------------------------------------#
-#         validation_result = validate_test_case(user_stories_and_criteria)
-        #
-        # st.subheader("Test Execution Results")
-        # st.write(validation_result)
-        # if st.button("Generate User Stories and Acceptance Criteria"):
-        #     with st.spinner("Generating user stories and acceptance criteria..."):
-        #         user_stories_and_criteria = generate_user_stories_and_criteria(text)
-        #     st.subheader("Generated User Stories and Acceptance Criteria")
-        #     st.write(user_stories_and_criteria)
-        # print(user_stories_and_criteria)
-        # if setup_file:
-        #     setup_instructions = setup_file.read().decode("utf-8")
-        #     if st.button("Automate Environment Setup"):
-        #         setup_environment(setup_instructions)
-        #         st.success("Environment setup completed successfully!")
+                # st.write(user_stories_and_criteria_specific)
 
-        # Generate and Execute Test Cases
-#         if st.button("Generate and Execute Test Cases"):
-#             with st.spinner("Executing test cases..."):
-#                 test_cases = [f"Test case for: {line}" for line in user_stories_and_criteria.splitlines() if line.strip()]
-#                 print(test_cases)
-#                 results = []
-#                 for test_case in test_cases:
-#                     acceptance_criteria = """
-# 1. The platform must integrate all HR functions (Recruitment, Onboarding, Employee Management, Attendance, Leave, PMS, Payroll View, Assets, Offboarding, Helpdesk).
-# 2. Employees must be able to apply for leaves, view/download payslips, regularize attendance, and raise helpdesk tickets.
-# 3. Administrators must configure holidays, leave types, and payroll policies, upload payslips, and define access controls.
-# 4. The setup process for the system must follow guidelines and be automated.
-# 5. The platform must ensure secure, role-based access to data and workflows.
-# """
-#                     validation_result = validate_test_case(test_case, acceptance_criteria)
-#                     status, explanation = validation_result.split("\n", 1)
-#                     results.append({"test_case": test_case, "status": status, "explanation": explanation})
-#             st.subheader("Test Execution Results")
-#             st.write(results)
-#
-#             report_path = generate_report(results)
-#             st.download_button(
-#                 label="Download Test Report",
-#                 data=open(report_path, "rb").read(),
-#                 file_name="test_report.csv",
-#             )
+                doc = Document()
+                output_file_path = "./src/services/result_file.docx"
+                # # Add content to the document
+                # if isinstance(user_stories_and_criteria_specific, list):
+                #     for item in user_stories_and_criteria_specific:
+                #         doc.add_paragraph(item)
+                # else:
+                #     doc.add_paragraph(user_stories_and_criteria_specific)
 
+                # # Save the document to the specified path
+                # doc.save(output_file_path)
 
+                # creating the techincal document
+                st.subheader("Created internal Technical Document")
+                tech_doc = parse_document(output_file_path)
+                st.write(tech_doc)
 
+                ## creating the test cases
+                # test_cases = generate_test_case()
+
+                ## scraping the page for the complete dom tree
+                page_url = "http://3.83.24.72:8000/"
+                try:
+                    # Extract and display DOM attributes
+                    dom_data = extract_dom_attributes(page_url)
+                    st.subheader("Extracted DOM of the page")
+                    st.write(json.dump(dom_data, indent=4))
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+
+                st.subheader("Comapring the DOM")
+                compare_data = compare_dom_tech_doc()
+                st.write(compare_data)
+
+                st.subheader("Generated Pytest scripts")
+                sel_Script = generate_selenium_script()
+                st.subheader("Scripts")
+                st.write(sel_Script)
 
 if __name__ == "__main__":
     main()
